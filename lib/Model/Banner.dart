@@ -11,6 +11,9 @@ class MBanner {
   var price;
   var rating;
 
+
+  var previous_price;
+
   MBanner(
       {this.comments_list,
       this.rating,
@@ -19,5 +22,7 @@ class MBanner {
       this.id,
       this.price,
       this.description,
-      this.discount});
+      this.discount,
+      this.previous_price
+      });
 }

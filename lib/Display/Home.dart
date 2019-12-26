@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:super_fresh_admin/Display/Banner/Banner.dart';
+import 'package:super_fresh_admin/Display/Category/Category.dart';
+import 'package:super_fresh_admin/Display/Popular/Popular.dart';
+import 'package:super_fresh_admin/Display/Product/Product.dart';
+import 'package:super_fresh_admin/Drawer/NaviationDrawer.dart';
 import 'package:super_fresh_admin/Utils/Common.dart';
 
 class Home extends StatelessWidget {
@@ -17,9 +21,19 @@ class DisplayHome extends StatefulWidget {
 }
 
 class _DisplayHomeState extends State<DisplayHome> {
+  GlobalKey<ScaffoldState> _key = new GlobalKey();
+
+  close_drawer() {
+    _key.currentState.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
+      drawer: NavigationDrawer(
+        closeDrawer: close_drawer,
+      ),
       backgroundColor: Color(0xffF6F6F6),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -30,9 +44,14 @@ class _DisplayHomeState extends State<DisplayHome> {
               TextStyle(color: Color(0xffFF4518), fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        leading: Icon(
-          Icons.menu,
-          color: Colors.black45,
+        leading: InkWell(
+          onTap: () {
+            _key.currentState.openDrawer();
+          },
+          child: Icon(
+            Icons.menu,
+            color: Colors.black45,
+          ),
         ),
         actions: <Widget>[
           Icon(
@@ -49,6 +68,7 @@ class _DisplayHomeState extends State<DisplayHome> {
           _banner(),
           _catagory(),
           _favourite(),
+          _product(),
         ],
       ),
     );
@@ -75,8 +95,11 @@ class _DisplayHomeState extends State<DisplayHome> {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: RaisedButton(
-        onPressed: () {},
-        child: Text("Catagory",
+        onPressed: () {
+          Navigator.of(context)
+              .push(new MaterialPageRoute(builder: (context) => Category()));
+        },
+        child: Text("Category",
             style: TextStyle(
                 color: Common.orange_color, fontWeight: FontWeight.bold)),
       ),
@@ -87,8 +110,26 @@ class _DisplayHomeState extends State<DisplayHome> {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: RaisedButton(
-        onPressed: () {},
-        child: Text("Favourite",
+        onPressed: () {
+          Navigator.of(context)
+              .push(new MaterialPageRoute(builder: (context) => Popular()));
+        },
+        child: Text("Popular",
+            style: TextStyle(
+                color: Common.orange_color, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+
+  _product() {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(new MaterialPageRoute(builder: (context) => AllProducts()));
+        },
+        child: Text("Product",
             style: TextStyle(
                 color: Common.orange_color, fontWeight: FontWeight.bold)),
       ),

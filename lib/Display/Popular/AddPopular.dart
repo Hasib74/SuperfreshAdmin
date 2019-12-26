@@ -5,27 +5,19 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:super_fresh_admin/Model/Banner.dart';
+import 'package:super_fresh_admin/Model/MPopular.dart';
 import 'package:super_fresh_admin/Utils/Common.dart';
 
-class AddBanner extends StatefulWidget {
-  MBanner banner;
+class AddPopular extends StatefulWidget {
+  MPopular popular;
 
-  AddBanner({this.banner});
+  AddPopular({this.popular});
 
   @override
-  _AddBannerState createState() => _AddBannerState();
+  _AddPopularState createState() => _AddPopularState();
 }
 
-class _AddBannerState extends State<AddBanner> {
-
-
-
-  List<String> _category_name=List();
-
-
-  List<String> _catagory_id = List();
-
-
+class _AddPopularState extends State<AddPopular> {
   File _selected_image;
 
   var _selected_catagry;
@@ -43,56 +35,50 @@ class _AddBannerState extends State<AddBanner> {
 
   // var _name_controller=new TextEditingController();
 
+  List<String> _catagory_id = List();
+  List<String> _category_name = List();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-
     _catagory_name_and_id();
-    if (widget.banner != null) {
-      _name_controller.text = widget.banner.name;
 
-      _discount_controller.text = widget.banner.discount;
+    if (widget.popular != null) {
+      _name_controller.text = widget.popular.name;
 
-      _discription_controller.text = widget.banner.description;
+      _discount_controller.text = widget.popular.discount;
 
-      _price_controller.text = widget.banner.price;
+      _discription_controller.text = widget.popular.description;
 
-      _previous_price_controller.text = widget.banner.previous_price;
+      _price_controller.text = widget.popular.price;
+
+      _previous_price_controller.text = widget.popular.previous_price;
     }
-
-
   }
 
-
   void _catagory_name_and_id() {
+    FirebaseDatabase.instance
+        .reference()
+        .child(Common.category)
+        .once()
+        .then((v) {
+      Map<dynamic, dynamic> _category = v.value;
 
-    FirebaseDatabase.instance.reference().child(Common.category).once().then((v){
-
-
-      Map<dynamic,dynamic> _category = v.value;
-
-
-      _category.forEach((k,v){
-
+      _category.forEach((k, v) {
         setState(() {
-
           _catagory_id.add(k);
 
           _category_name.add(v["name"]);
-
         });
-
-
       });
-
     });
-
   }
+
   @override
   Widget build(BuildContext context) {
-    print("Updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  ${widget.banner}");
+    // print("Updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee  ${widget.banner}");
 
     return Scaffold(
       body: Stack(
@@ -133,7 +119,7 @@ class _AddBannerState extends State<AddBanner> {
   }
 
   _add_image() {
-    return widget.banner == null
+    return widget.popular == null
         ? Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
@@ -204,7 +190,7 @@ class _AddBannerState extends State<AddBanner> {
                         : DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                              "${widget.banner.image}",
+                              "${widget.popular.image}",
                             )),
                   ),
                   child: _selected_image == null
@@ -265,9 +251,8 @@ class _AddBannerState extends State<AddBanner> {
         },
 */
 
-        items: _category_name.map((name){
-
-          return  DropdownMenuItem(
+        items: _category_name.map((name) {
+          return DropdownMenuItem(
             value: _catagory_id[_category_name.indexOf(name)],
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -279,59 +264,7 @@ class _AddBannerState extends State<AddBanner> {
               ],
             ),
           );
-
-        }).toList() /*[
-          DropdownMenuItem(
-            value: "01",
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Jewellery",
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-          DropdownMenuItem(
-            value: "02",
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Electronics",
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-          DropdownMenuItem(
-            value: "03",
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Gadgets",
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-          DropdownMenuItem(
-            value: "04",
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Beauty and Health",
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-        ],*/
-
-        ,
+        }).toList(),
         onChanged: (value) {
           setState(() {
             _selected_catagry = value;
@@ -458,9 +391,7 @@ class _AddBannerState extends State<AddBanner> {
         height: 45,
         child: new RaisedButton(
           onPressed: () {
-            print(
-                "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  ${_selected_catagry.toString()}");
-
+            //   print("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  ${_selected_catagry.toString()}");
             if (/*_selected_image != null &&*/
                 _name_controller.value.text != null &&
                     _discount_controller.value.text != null &&
@@ -470,22 +401,22 @@ class _AddBannerState extends State<AddBanner> {
                         null /*&&
                 _selected_catagry != null*/
                 ) {
-              if (widget.banner == null) {
+              if (widget.popular == null) {
                 uploadImage();
               } else {
                 if (_selected_image == null) {
                   FirebaseDatabase.instance
                       .reference()
-                      .child(Common.banner)
-                      .child(widget.banner.id)
+                      .child(Common.popular)
+                      .child(widget.popular.id)
                       .update({
                     "name": _name_controller.value.text,
                     "price": _price_controller.value.text,
                     "discount": _discount_controller.value.text,
                     "description": _discription_controller.value.text,
                     "catagory_id": _selected_catagry,
-                    "image": widget.banner.image,
-                    "previous_price": widget.banner.previous_price
+                    "image": widget.popular.image,
+                    "previous_price": widget.popular.previous_price
                   }).then((_) {
                     setState(() {
                       loading = false;
@@ -542,17 +473,8 @@ class _AddBannerState extends State<AddBanner> {
     await uploadTask.onComplete;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
-      if (widget.banner == null) {
-        FirebaseDatabase.instance
-            .reference()
-            .child(Common.banner)
-            .child(new DateTime.now()
-                .toIso8601String()
-                .replaceAll(".", "")
-                .replaceAll("-", "")
-                .replaceAll("T", "")
-                .replaceAll(":", ""))
-            .set({
+      if (widget.popular == null) {
+        FirebaseDatabase.instance.reference().child(Common.popular).push().set({
           "name": _name_controller.value.text,
           "price": _price_controller.value.text,
           "discount": _discount_controller.value.text,
@@ -572,8 +494,8 @@ class _AddBannerState extends State<AddBanner> {
       } else {
         FirebaseDatabase.instance
             .reference()
-            .child(Common.banner)
-            .child(widget.banner.id)
+            .child(Common.popular)
+            .child(widget.popular.id)
             .update({
           "name": _name_controller.value.text,
           "price": _price_controller.value.text,
@@ -603,10 +525,10 @@ class _AddBannerState extends State<AddBanner> {
     await uploadTask.onComplete;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
-      if (widget.banner == null) {
+      if (widget.popular == null) {
         FirebaseDatabase.instance
             .reference()
-            .child(Common.banner)
+            .child(Common.popular)
             .child(new DateTime.now()
                 .toIso8601String()
                 .replaceAll(".", "")
@@ -633,8 +555,8 @@ class _AddBannerState extends State<AddBanner> {
       } else {
         FirebaseDatabase.instance
             .reference()
-            .child(Common.banner)
-            .child(widget.banner.id)
+            .child(Common.popular)
+            .child(widget.popular.id)
             .update({
           "name": _name_controller.value.text,
           "price": _price_controller.value.text,
