@@ -566,6 +566,9 @@ class _AddProductState extends State<AddProduct> {
             .child(Common.products)
             .child(widget.product.id)
             .update({
+
+          //=====
+
           "name": _name_controller.value.text,
           "price": _price_controller.value.text,
           "discount": _discount_controller.value.text,
