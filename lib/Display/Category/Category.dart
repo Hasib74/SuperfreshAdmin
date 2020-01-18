@@ -56,7 +56,8 @@ class _CategoryState extends State<Category> {
                 .child(Common.category)
                 .onValue,
             builder: (context, snapshot) {
-              if (snapshot.data.snapshot.value == null) {
+              if (snapshot.data.snapshot.value == null ||
+                  snapshot.data == null) {
                 return Container();
               } else {
                 List<MCategory> _category_list = new List();
@@ -74,78 +75,74 @@ class _CategoryState extends State<Category> {
                     itemCount: _category_list.length,
                     itemBuilder: (context, int index) {
                       return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Stack(children: <Widget>[
-
-
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 130,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        _category_list[index].image)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black38,
-                                      blurRadius: 2,
-                                      spreadRadius: 2)
-                                ]),
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            children: <Widget>[
+                              Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: 20,
-                                color: Colors.black38,
-                                child: Center(
-                                  child: Text(
-                                    "${_category_list[index].name}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                height: 130,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                            _category_list[index].image)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black38,
+                                          blurRadius: 2,
+                                          spreadRadius: 2)
+                                    ]),
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 20,
+                                    color: Colors.black38,
+                                    child: Center(
+                                      child: Text(
+                                        "${_category_list[index].name}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
+                              Positioned(
+                                top: 5,
+                                right: 5,
+                                child: PopupMenuButton<String>(
+                                    onSelected: (value) {
+                                      // print("Valueeeeeeeeeeeeeeeeeeeee  ${value}");
 
-
-                          Positioned(
-                            top: 5,
-                            right: 5,
-                            child: PopupMenuButton<String>(
-                                onSelected: (value) {
-                                  // print("Valueeeeeeeeeeeeeeeeeeeee  ${value}");
-
-                                  _popUpMenuAction(
-                                      value, _category_list[index]);
-                                },
-                                itemBuilder: (context) {
-                                  return <PopupMenuEntry<String>>[
-                                    const PopupMenuItem(
-                                        value: "Update",
-                                        child: ListTile(
-                                          leading: Icon(Icons.edit),
-                                          title: Text("Update"),
-                                        )),
-                                    const PopupMenuItem(
-                                        value: "Delete",
-                                        child: ListTile(
-                                          leading: Icon(Icons.delete),
-                                          title: Text("Delete"),
-                                        )),
-                                  ];
-                                },
-                                child: new Icon(
-                                  Icons.more_vert,
-                                  color: Common.orange_color,
-                                )),
-                          )
-                          
-                        ],)
-                      );
+                                      _popUpMenuAction(
+                                          value, _category_list[index]);
+                                    },
+                                    itemBuilder: (context) {
+                                      return <PopupMenuEntry<String>>[
+                                        const PopupMenuItem(
+                                            value: "Update",
+                                            child: ListTile(
+                                              leading: Icon(Icons.edit),
+                                              title: Text("Update"),
+                                            )),
+                                        const PopupMenuItem(
+                                            value: "Delete",
+                                            child: ListTile(
+                                              leading: Icon(Icons.delete),
+                                              title: Text("Delete"),
+                                            )),
+                                      ];
+                                    },
+                                    child: new Icon(
+                                      Icons.more_vert,
+                                      color: Common.orange_color,
+                                    )),
+                              )
+                            ],
+                          ));
                     });
               }
             }),
@@ -153,8 +150,7 @@ class _CategoryState extends State<Category> {
     );
   }
 
-  void _popUpMenuAction(String value, MCategory  mCategory) {
-
+  void _popUpMenuAction(String value, MCategory mCategory) {
     if (value == "Delete") {
       FirebaseDatabase.instance
           .reference()
@@ -164,17 +160,13 @@ class _CategoryState extends State<Category> {
           .then((_) {
         print("Remove successfully");
 
-
-
         //_load();
       });
     } else if (value == "Update") {
-
-
-      Navigator.of(context).push(new MaterialPageRoute(builder: (context)=>AddCategory(update_category: mCategory,)));
-
-
-
+      Navigator.of(context).push(new MaterialPageRoute(
+          builder: (context) => AddCategory(
+                update_category: mCategory,
+              )));
 
       /*setState(() {
 
@@ -183,6 +175,5 @@ class _CategoryState extends State<Category> {
         page = "Update";
       });*/
     }
-
   }
 }
