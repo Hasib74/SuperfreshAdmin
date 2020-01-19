@@ -267,7 +267,7 @@ class _AllProductsState extends State<AllProducts>
           builder: (context, snapshot) {
             if (snapshot.data == null || snapshot.data.snapshot.value == null) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: Container(),
               );
             } else {
               List _search_name = new List();

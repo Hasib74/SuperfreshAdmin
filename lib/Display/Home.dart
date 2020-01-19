@@ -31,33 +31,26 @@ class _DisplayHomeState extends State<DisplayHome> {
 
   FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  new FlutterLocalNotificationsPlugin();
-
+      new FlutterLocalNotificationsPlugin();
 
   close_drawer() {
     _key.currentState.openEndDrawer();
   }
-
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-
-
     print("Tokennnn ...... ");
 
     registerNotification();
     configLocalNotification();
-
   }
-
-
 
   void configLocalNotification() {
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
+        new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
@@ -65,21 +58,14 @@ class _DisplayHomeState extends State<DisplayHome> {
   }
 
   void registerNotification() {
-
-
-
     firebaseMessaging.requestNotificationPermissions();
-
 
     firebaseMessaging.configure(onMessage: (Map<String, dynamic> message) {
       print('onMessage: $message');
 
-
       // if()
 
       showNotification(message['notification']);
-
-
 
       return;
     }, onResume: (Map<String, dynamic> message) {
@@ -89,8 +75,6 @@ class _DisplayHomeState extends State<DisplayHome> {
       print('onLaunch: $message');
       return;
     });
-
-
 
     firebaseMessaging.getToken().then((token) {
       print('token: $token');
@@ -109,7 +93,9 @@ class _DisplayHomeState extends State<DisplayHome> {
 
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid ? 'com.colorbangla.super_fresh_admin': 'com.duytq.flutterchatdemo',
+      Platform.isAndroid
+          ? 'com.colorbangla.super_fresh_admin'
+          : 'com.duytq.flutterchatdemo',
       'Super Fresh Admin App',
       'your channel description',
       playSound: true,
@@ -118,10 +104,10 @@ class _DisplayHomeState extends State<DisplayHome> {
       priority: Priority.High,
     );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics =
-    new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, message['title'].toString(), message['body'].toString(), platformChannelSpecifics,
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+        message['body'].toString(), platformChannelSpecifics,
         payload: json.encode(message));
   }
 
